@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Halyn — Organic Chemistry Study Guide</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #ffffff;
+    --bg2: #f7f6f3;
+    --bg3: #f0efe9;
+    --text: #1a1a18;
+    --text2: #5a5a56;
+    --text3: #8a8a84;
+    --border: rgba(0,0,0,0.10);
+    --border2: rgba(0,0,0,0.18);
+    --teal-bg: #E1F5EE; --teal: #0F6E56; --teal-mid: #1D9E75;
+    --blue-bg: #E6F1FB; --blue: #185FA5; --blue-mid: #378ADD;
+    --amber-bg: #FAEEDA; --amber: #854F0B; --amber-mid: #BA7517;
+    --gray-bg: #F1EFE8; --gray: #5F5E5A;
+    --red-bg: #FCEBEB; --red: #A32D2D;
+    --purple-bg: #EEEDFE; --purple: #3C3489;
+    --radius: 10px; --radius-sm: 6px;
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; background: var(--bg2); color: var(--text); font-size: 14px; line-height: 1.6; }
+
+  /* HEADER */
+  .site-header { background: var(--bg); border-bottom: 1px solid var(--border); padding: 20px 32px; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .header-left h1 { font-size: 18px; font-weight: 600; color: var(--text); }
+  .header-left p { font-size: 12px; color: var(--text3); margin-top: 2px; }
+  .progress-summary { display: flex; gap: 16px; align-items: center; }
+  .prog-stat { text-align: center; }
+  .prog-stat .num { font-size: 22px; font-weight: 600; color: var(--teal); }
+  .prog-stat .lbl { font-size: 11px; color: var(--text3); }
+  .prog-divider { width: 1px; height: 36px; background: var(--border); }
+
+  /* NAV TABS */
+  .tab-bar { background: var(--bg); border-bottom: 1px solid var(--border); padding: 0 32px; display: flex; gap: 0; overflow-x: auto; }
+  .tab-btn { padding: 12px 20px; font-size: 13px; font-weight: 500; color: var(--text2); border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; transition: all 0.15s; }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--teal); border-bottom-color: var(--teal); }
+
+  /* LAYOUT */
+  .main { max-width: 1100px; margin: 0 auto; padding: 28px 24px; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* FILTER BAR */
+  .filter-row { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+  .filter-label { font-size: 12px; color: var(--text3); margin-right: 4px; }
+  .filter-btn { font-size: 12px; padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border2); background: var(--bg); color: var(--text2); cursor: pointer; transition: all 0.15s; }
+  .filter-btn.active { background: var(--teal-mid); color: #fff; border-color: var(--teal-mid); }
+
+  /* CHAPTER CARDS */
+  .chapter-grid { display: flex; flex-direction: column; gap: 14px; }
+  .ch-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: box-shadow 0.15s; }
+  .ch-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+  .ch-card-header { padding: 14px 18px; display: flex; align-items: flex-start; gap: 12px; cursor: pointer; user-select: none; }
+  .ch-icon { width: 36px; height: 36px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+  .ch-meta { flex: 1; }
+  .ch-title { font-size: 14px; font-weight: 600; color: var(--text); }
+  .ch-sub { font-size: 12px; color: var(--text2); margin-top: 2px; }
+  .ch-badges { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+  .badge { font-size: 11px; padding: 2px 9px; border-radius: 20px; font-weight: 500; }
+  .badge-essential { background: var(--teal-bg); color: var(--teal); }
+  .badge-high { background: var(--blue-bg); color: var(--blue); }
+  .badge-medium { background: var(--amber-bg); color: var(--amber); }
+  .badge-later { background: var(--gray-bg); color: var(--gray); }
+  .badge-master { background: var(--teal-bg); color: var(--teal); }
+  .badge-preview { background: var(--gray-bg); color: var(--gray); }
+  .badge-kit-essential { background: #1D9E75; color: #fff; }
+  .badge-kit-recommended { background: #378ADD; color: #fff; }
+  .badge-kit-none { background: var(--bg3); color: var(--text3); border: 1px solid var(--border); }
+  .ch-toggle { font-size: 18px; color: var(--text3); margin-left: auto; flex-shrink: 0; transition: transform 0.2s; }
+  .ch-card.open .ch-toggle { transform: rotate(180deg); }
+  .ch-progress { display: flex; align-items: center; gap: 8px; margin-left: auto; flex-shrink: 0; }
+  .ch-prog-bar { width: 80px; height: 6px; background: var(--bg3); border-radius: 3px; overflow: hidden; }
+  .ch-prog-fill { height: 100%; background: var(--teal-mid); border-radius: 3px; transition: width 0.3s; }
+  .ch-prog-pct { font-size: 11px; color: var(--text3); width: 28px; text-align: right; }
+
+  /* EXPANDED BODY */
+  .ch-card-body { display: none; border-top: 1px solid var(--border); }
+  .ch-card.open .ch-card-body { display: block; }
+  .ch-sections { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  .ch-section { padding: 16px 18px; border-right: 1px solid var(--border); }
+  .ch-section:last-child { border-right: none; }
+  .ch-section:nth-child(3), .ch-section:nth-child(4) { border-top: 1px solid var(--border); }
+  .section-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text3); margin-bottom: 8px; }
+  .section-content { font-size: 13px; color: var(--text); line-height: 1.6; }
+  .section-content p { margin-bottom: 4px; }
+
+  /* CHECKLIST */
+  .checklist { list-style: none; }
+  .checklist li { display: flex; align-items: flex-start; gap: 8px; padding: 4px 0; font-size: 13px; color: var(--text); border-bottom: 1px solid var(--border); }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist input[type="checkbox"] { margin-top: 3px; width: 14px; height: 14px; cursor: pointer; accent-color: var(--teal-mid); flex-shrink: 0; }
+  .checklist .done { text-decoration: line-through; color: var(--text3); }
+
+  /* LINKS */
+  .link-list { list-style: none; }
+  .link-list li { display: flex; align-items: flex-start; gap: 8px; padding: 5px 0; border-bottom: 1px solid var(--border); }
+  .link-list li:last-child { border-bottom: none; }
+  .link-tag { font-size: 10px; padding: 2px 7px; border-radius: 4px; background: var(--bg2); color: var(--text2); white-space: nowrap; font-weight: 500; margin-top: 1px; border: 1px solid var(--border); flex-shrink: 0; }
+  .link-list a { font-size: 12px; color: var(--blue); text-decoration: none; line-height: 1.5; }
+  .link-list a:hover { text-decoration: underline; }
+
+  /* MISTAKES */
+  .mistake-list { list-style: none; }
+  .mistake-list li { display: flex; gap: 8px; padding: 4px 0; font-size: 12px; color: var(--text2); border-bottom: 1px solid var(--border); line-height: 1.5; }
+  .mistake-list li:last-child { border-bottom: none; }
+  .mistake-list li::before { content: "!"; background: var(--red-bg); color: var(--red); border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+  /* SYLLABUS TABLE */
+  .syllabus-section { margin-bottom: 32px; }
+  .syllabus-section h2 { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid var(--teal-mid); display: inline-block; }
+  .syl-table { width: 100%; border-collapse: collapse; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; font-size: 12px; }
+  .syl-table thead tr { background: var(--bg3); }
+  .syl-table th { padding: 10px 12px; text-align: left; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text3); border-bottom: 1px solid var(--border2); white-space: nowrap; }
+  .syl-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.5; }
+  .syl-table tr:last-child td { border-bottom: none; }
+  .syl-table tr:hover td { background: var(--bg2); }
+  .syl-table a { color: var(--blue); text-decoration: none; font-size: 11px; }
+  .syl-table a:hover { text-decoration: underline; }
+
+  /* SELF-CHECK */
+  .selfcheck-box { background: var(--purple-bg); border: 1px solid #AFA9EC; border-radius: var(--radius-sm); padding: 10px 14px; margin-top: 8px; font-size: 12px; color: var(--purple); font-style: italic; }
+  .selfcheck-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--purple); margin-bottom: 4px; font-style: normal; }
+
+  /* KIT VISUAL GUIDE */
+  .kit-legend { display: flex; gap: 20px; margin-bottom: 16px; flex-wrap: wrap; }
+  .kit-legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text2); }
+  .kit-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .dot-e { background: #1D9E75; }
+  .dot-r { background: #378ADD; }
+  .dot-n { background: #B4B2A9; }
+
+  /* FOCUS AREA TABLE */
+  .focus-table { width: 100%; border-collapse: collapse; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .focus-table th { padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text3); background: var(--bg3); border-bottom: 1px solid var(--border2); }
+  .focus-table td { padding: 11px 14px; border-bottom: 1px solid var(--border); font-size: 12px; vertical-align: top; line-height: 1.55; }
+  .focus-table tr:last-child td { border-bottom: none; }
+  .focus-table tr:hover td { background: var(--bg2); }
+  .checkpoint-box { background: var(--teal-bg); border-radius: var(--radius-sm); padding: 4px 8px; font-size: 11px; color: var(--teal); display: inline-block; }
+
+  /* RESPONSIVE */
+  @media (max-width: 700px) {
+    .site-header { padding: 14px 16px; }
+    .main { padding: 16px 12px; }
+    .tab-bar { padding: 0 12px; }
+    .ch-sections { grid-template-columns: 1fr; }
+    .ch-section:nth-child(2) { border-top: 1px solid var(--border); border-right: none; }
+    .ch-section:nth-child(3) { border-right: none; }
+    .syl-table { font-size: 11px; }
+    .progress-summary { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-left">
+    <h1>Organic Chemistry — Study Guide</h1>
+    <p>Harvard-Westlake · Klein 4th Edition · Halyn Kim</p>
+  </div>
+  <div class="progress-summary">
+    <div class="prog-stat"><div class="num" id="done-count">0</div><div class="lbl">Tasks done</div></div>
+    <div class="prog-divider"></div>
+    <div class="prog-stat"><div class="num" id="total-count">0</div><div class="lbl">Total tasks</div></div>
+    <div class="prog-divider"></div>
+    <div class="prog-stat"><div class="num" id="pct-count">0%</div><div class="lbl">Complete</div></div>
+  </div>
+</header>
+
+<nav class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('chapters', this)">Chapter Guide</button>
+  <button class="tab-btn" onclick="switchTab('syllabus', this)">HW Syllabus</button>
+  <button class="tab-btn" onclick="switchTab('prereqs', this)">Prerequisites</button>
+  <button class="tab-btn" onclick="switchTab('focus', this)">Focus Areas</button>
+</nav>
+
+<main class="main">
+
+<!-- ========== TAB: CHAPTER GUIDE ========== -->
+<div id="tab-chapters" class="tab-content active">
+  <div class="filter-row">
+    <span class="filter-label">Filter:</span>
+    <button class="filter-btn active" onclick="filterChapters('all',this)">All</button>
+    <button class="filter-btn" onclick="filterChapters('master',this)">Master priority</button>
+    <button class="filter-btn" onclick="filterChapters('kit-essential',this)">Kit essential</button>
+    <button class="filter-btn" onclick="filterChapters('kit-recommended',this)">Kit recommended</button>
+    <button class="filter-btn" onclick="filterChapters('later',this)">Later / optional</button>
+  </div>
+
+  <div class="chapter-grid" id="chapter-grid">
+
+    <!-- CH 1 -->
+    <div class="ch-card" data-priority="master" data-kit="essential">
+      <div class="ch-card-header" onclick="toggleCard(this)">
+        <div class="ch-icon" style="background:#E1F5EE;color:#0F6E56;">1</div>
+        <div class="ch-meta">
+          <div class="ch-title">Ch. 1 — Electrons, Bonds &amp; Molecular Properties</div>
+          <div class="ch-sub">Lewis structures · VSEPR · hybridization · polarity · IMF</div>
+          <div class="ch-badges">
+            <span class="badge badge-master">Master</span>
+            <span class="badge badge-kit-essential">Kit: Essential</span>
+          </div>
+        </div>
+        <div class="ch-progress">
+          <div class="ch-prog-bar"><div class="ch-prog-fill" id="prog1" style="width:0%"></div></div>
+          <div class="ch-prog-pct" id="pct1">0%</div>
+        </div>
+        <div class="ch-toggle">▾</div>
+      </div>
+      <div class="ch-card-body">
+        <div class="ch-sections">
+          <div class="ch-section">
+            <div class="section-title">Study Goal</div>
+            <div class="section-content">Turn Honors Chem tools into organic-ready instincts. Achieve automatic fluency with Lewis structures, formal charge, hybridization, and polarity.</div>
+            <br>
+            <div class="section-title">HW Syllabus Topics</div>
+            <div class="section-content">Electronic structure · Lewis structures · periodic trends · VSEPR · polarity · intermolecular forces</div>
+          </div>
+          <div class="ch-section">
+            <div class="section-title">Model Kit Usage</div>
+            <div class="section-content">
+              Build sp³ (tetrahedral), sp² (trigonal planar), sp (linear) carbons and compare bond angles directly.<br>Start with: methane → ethylene → acetylene.
+            </div>
+            <br>
+            <div class="section-title">Online Resources</div>
+            <ul class="link-list">
+              <li><span class="link-tag">Khan</span><a href="https://www.khanacademy.org/science/organic-chemistry/gen-chem-review" target="_blank">Structure &amp; Bonding overview</a></li>
+              <li><span class="link-tag">Khan</span><a href="https://www.khanacademy.org/science/ap-chemistry-beta/x2eef969c74e0d802%3Amolecular-and-ionic-compound-structure-and-properties/x2eef969c74e0d802%3Alewis-diagrams/e/lewis-diagrams" target="_blank">Lewis diagrams (practice)</a></li>
+              <li><span class="link-tag">Khan</span><a href="https://www.khanacademy.org/science/hs-chemistry/x2613d8165d88df5e%3Astates-of-matter/x2613d8165d88df5e%3Aelectronegativity-and-bond-polarity/v/molecular-geometry-vsepr-theory" target="_blank">VSEPR theory</a></li>
+              <li><span class="link-tag">MolView</span><a href="https://molview.org" target="_blank">3D structure viewer</a></li>
+            </ul>
+          </div>
+          <div class="ch-section">
+            <div class="section-title">Study Checklist</div>
+            <ul class="checklist" data-chapter="1">
+              <li><input type="checkbox" onchange="updateProgress(1,this)"><span>Read Klein Ch.1; mark δ+ and δ− on 10 bonds</span></li>
+              <li><input type="checkbox" onchange="updateProgress(1,this)"><span>Solve SkillBuilders; target 80–90% accuracy on formal charge</span></li>
+              <li><input type="checkbox" onchange="updateProgress(1,this)"><span>Build sp³/sp²/sp carbons with model kit; compare bond angles</span></li>
+              <li><input type="checkbox" onchange="updateProgress(1,this)"><span>Complete one-page Ch.1 rule sheet + missed-problem list</span></li>
+            </ul>
+          </div>
+          <div class="ch-section">
+            <div class="section-title">Common Mistakes to Avoid</div>
+            <ul class="mistake-list">
+              <li>Omitting lone pairs on O and N atoms</li>
+              <li>Formal charge calculation errors (bonds vs electrons)</li>
+              <li>Wrong hybridization assignment</li>
+              <li>Reversing δ+/δ− polarity direction</li>
+            </ul>
+            <div class="selfcheck-box">
+              <div class="selfcheck-label">Self-check</div>
+              Can I mark δ+/δ− on C=O, C−Cl, O−H, N−H without hesitation?
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CH 2 -->
+    <div class="ch-card" data-priority="master" data-kit="essential">
+      <div class="ch-card-header" onclick="toggleCard(this)">
+        <div class="ch-icon" style="background:#E1F5EE;color:#0F6E56;">2</div>
+        <div class="ch-meta">
+          <div class="ch-title">Ch. 2 — Molecular Representations</div>
+          <div class="ch-sub">Bond-line structures · functional groups · 3D visualization foundation</div>
+          <div class="ch-badges">
+            <span class="badge badge-master">Master</span>
+            <span class="badge badge-kit-essential">Kit: Essential</span>
+          </div>
+        </div>
+        <div class="ch-progress">
+          <div class="ch-prog-bar"><div class="ch-prog-fill" id="prog2" style="width:0%"></div></div>
+          <div class="ch-prog-pct" id="pct2">0%</div>
+        </div>
+        <div class="ch-toggle">▾</div>
+      </div>
+      <div class="ch-card-body">
+        <div class="ch-sections">
+          <div class="ch-section">
+            <div class="section-title">Study Goal</div>
+            <div class="section-content">Become fully fluent in bond-line structures. Convert between condensed, Lewis, and skeletal forms; count hidden hydrogens without effort.</div>
+            <br>
+            <div class="section-title">HW Syllabus Topics</div>
+            <div class="section-content">Molecular representations · bond-line structures · functional groups · 3D visualization</div>
+          </div>
+          <div class="ch-section">
+            <div class="section-title">Model Kit Usage</div>
+            <div class="section-content">Draw a 2D structure first, then build it with the kit and compare. Practice wedge/dash notation against the physical model.</div>
+            <br>
+            <div class="section-title">Online Resources</div>
+            <ul class="link-list">
+              <li><span class="link-tag">Khan</span><a href="https://www.khanacademy.org/science/organic-chemistry/gen-chem-review/bond-line-structures/v/bond-line-structures-new" target="_blank">Bond-line structures</a></li>
+              <li><span class="link-tag">Khan</span><a href="https://www.khanacademy.org/science/organic-chemistry/gen-chem-review/bond-line-structures/v/three-dimensional-bond-line-structures-new" target="_blank">3D bond-line structures</a></li>
+              <li><span class="link-tag">MolView</span><a href="https://molview.org" target="_blank">2D → 3D conversion</a></li>
+            </ul>
+          </div>
+          <div class="ch-section">
+            <div class="section-title">Study Checklist</div>
+            <ul class="checklist" data-chapter="2">
+              <li><input type="checkbox" onchange="updateProgress(2,this)"><span>Practice condensed ↔ bond-line conversions (20 structures)</span></li>
+              <li><input type="checkbox" onchange="updateProgress(2,this)"><span>Label heteroatoms, lone pairs, and charges on each structure</span></li>
+              <li><input type="checkbox" onchange="updateProgress(2,this)"><span>Recognize 10–15 common functional groups by sight</span></li>
+              <li><input type="checkbox" onchange="updateProgress(2,this)"><span>Build 5 structures with kit; verify hidden H count</span></li>
+            </ul>
+          </div>
+          <div class="ch-section">
+            <div class="section-title">Common Mistakes to Avoid</div>
+            <ul class="mistake-list">
+              <li>Forgetting that vertices and endpoints represent carbon</li>
+              <li>Missing hydrogens on carbon atoms</li>
+              <li>Omitting lone pairs and H on heteroatoms (O, N)</li>
+            </ul>
+            <div class="selfcheck-box">
+              <div class="selfcheck-label">Self-check</div>
+              Can I read an unfamiliar bond-line structure and count carbons and hydrogens without stopping?
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CH 3 -->
+    <div class="ch-card" data-priority="master" data-kit="recommended">
+      <div class="ch-card-header" onclick="toggleCard(this)">
+        <div class="ch-icon" style="background:#E1F5EE;color:#0F6E56;">3</div>
+        <div class="ch-meta">
+          <div class="ch-title">Ch. 3 — Acids &amp; Bases</div>
+          <div class="ch-sub">pKa · conjugate pairs · equilibrium direction · stability factors</div>
+          <div class="ch-badges">
+            <span class="badge badge-master">Master</span>
+            <span class="badge badge-kit-recommended">Kit: Recommended</span>
+          </div>
+        </div>
+        <div class="ch-progress">
+          <div class="ch-prog-bar"><div class="ch-prog-fill" id="prog3" style="width:0%"></div></div>
+          <div class="ch-prog-pct" id="pct3">0%</div>
+        </div>
+        <div class="ch-toggle">▾</div>
+      </div>
+      <div class="ch-card-body">
+        <div class="ch-sections">
+          <div class="ch-section">
+            <div class="section-title">Study Goal</div>
+            <div class="section-content">Use pKa and conjugate base stability to predict acid/base direction and justify with resonance, induction, and atom size.</div>
+            <br>
+            <div class="section-title">HW Syllabus Topics</div>
+            <div class="section-content">Acid/base foundations · mechanisms · electronic structure · functional-group reactivity</div>
+          </div>
+          <div class="ch-section">
+            <div class="section-title">Model Kit Usage</div>
+            <div class="section-content">Use kit to visualize resonance structures in 3D — especially for delocalized systems (acetate, amide). Helps track electron movement without moving atoms.</div>
+            <br>
+            <div class="section-title">Online Resources</div>
+            <ul class="link-list">
+              <li><span class="link-tag">Khan</span><a href="https://www.khanacademy.org/science/organic-chemistry/organic-structures/acid-base-review/v/organic-acid-base-mechanisms" target="_blank">Organic acid-base mechanisms</a></li>
+              <li><span class="link-tag">Khan</span><a href="https://www.khanacademy.org/science/ap-chemistry-beta/x2eef969c74e0d802%3Achemical-reactions/x2eef969c74e0d802%3Aintroduction-to-acid-base-reactions/v/bronsted-lowry-definition-of-acids-and-bases" target="_blank">Brønsted-Lowry acids &amp; bases</a></li>
+              <li><span class="link-tag">Khan</span><a href="https://www.khanacademy.org/science/ap-chemistry-beta/x2eef969c74e0d802%3Amolecular-and-ionic-compound-structure-and-properties/x2eef969c74e0d802%3Aresonance-and-formal-charge/e/resonance-and-formal-charge" target="_blank">Resonance &amp; formal charge (practice)</a></li>
+            </ul>
+          </div>
+          <div class="ch-section">
+            <div class="section-title">Study Checklist</div>
+            <ul class="checklist" data-chapter="3">
+              <li><input type="checkbox" onchange="updateProgress(3,this)"><span>Create a pKa mini-table for common organic functional groups</span></li>
+              <li><input type="checkbox" onchange="updateProgress(3,this)"><span>For 10 reactions: identify acid, base, conjugates, and favored side</span></li>
+              <li><input type="checkbox" onchange="updateProgress(3,this)"><span>Draw resonance structures for acetate, allyl cation, amide</span></li>
+              <li><input type="checkbox" onchange="updateProgress(3,this)"><span>Build acid/base decision checklist with stability factors</span></li>
+            </ul>
+          </div>
+          <div class="ch-section">
+            <div class="section-title">Common Mistakes to Avoid</div>
+            <ul class="mistake-list">
+              <li>Reading pKa backwards (lower pKa = stronger acid)</li>
+              <li>Choosing the strongest species as the product</li>
+              <li>Ignoring resonance/induction/atom size in stability</li>
+            </ul>
+            <div class="selfcheck-box">
+              <div class="selfcheck-label">Self-check</div>
+              Can I choose the more acidic proton and explain why using conjugate base stability?
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CH 4 -->
+    <div class="ch-card" data-priority="master" data-kit="essential">
+      <div class="ch-card-header" onclick="toggleCard(this)">
+        <div class="ch-icon" style="background:#E6F1FB;color:#185FA5;">4</div>
+        <div class="ch-meta">
+          <div class="ch-title">Ch. 4 — Alkanes &amp; Cycloalkanes</div>
+          <div class="ch-sub">Nomenclature · Newman projections · chair conformations · IMF</div>
+          <div class="ch-badges">
+            <span class="badge badge-high">Strong familiarity</span>
+            <span class="badge badge-kit-essential">Kit: Essential</span>
+          </div>
+        </div>
+        <div class="ch-progress">
+          <div class="ch-prog-bar"><div class="ch-prog-fill" id="prog4" style="width:0%"></div></div>
+          <div class="ch-prog-pct" id="pct4">0%</div>
+        </div>
+        <div class="ch-toggle">▾</div>
+      </div>
+      <div class="ch-card-body">
+        <div class="ch-sections">
+          <div class="ch-section">
+            <div class="section-title">Study Goal</div>
+            <div class="section-content">Learn naming and conformation basics. Understand Newman projections and cyclohexane chair flips — very difficult without the model kit.</div>
+            <br>
+            <div class="section-title">HW Syllabus Topics</div>
+            <div class="section-content">Nomenclature · 3D shapes · IMF / physical properties · conformational analysis</div>
+          </div>
+          <div class="ch-section">
+            <div class="section-title">Model Kit Usage ★ Most Used</div>
+            <div class="section-content">
+              Build ethane and rotate front/back carbons to see staggered vs eclipsed.<br>
+              Build cyclohexane and physically perform the chair flip — axial/equatorial swap becomes instantly clear.<br>
+              <em>Cannot be understood from 2D drawings alone.</em>
+            </div>
+            <br>
+            <div class="section-title">Online Resources</div>
+            <ul class="link-list">
+              <li><span class="link-tag">Leah4Sci</span><a href="https://leah4sci.com/newman-projections/" target="_blank">Newman projections (video series)</a></li>
+              <li><span class="link-tag">ChemSteps</span><a href="https://www.chemistrysteps.com/newman-projection-of-chair-confromation/" target="_blank">Chair → Newman conversion</a></li>
+              <li><span class="link-tag">Khan</span><a href="https://www.khanacademy.org/science/organic-chemistry/bond-line-structures-alkanes-cycloalkanes/naming-alkanes/v/representing-structures-of-organic-molecules" target="_blank">Alkane structures &amp; naming</a></li>
+              <li><span class="link-tag">MolView</span><a href="https://molview.org" target="_blank">View cyclohexane in 3D</a></li>
+            </ul>
+          </div>
+          <div class="ch-section">
+            <div class="section-title">Study Checklist</div>
+            <ul class="checklist" data-chapter="4">
+              <li><input type="checkbox" onchange="updateProgress(4,this)"><span>Name 15 simple alkanes and cycloalkanes correctly</span></li>
+              <li><input type="checkbox" onchange="updateProgress(4,this)"><span>Build ethane with kit; draw staggered and eclipsed Newman projections</span></li>
+              <li><input type="checkbox" onchange="updateProgress(4,this)"><span>Build cyclohexane; perform chair flip and identify axial/equatorial positions</span></li>
+              <li><input type="checkbox" onchange="updateProgress(4,this)"><span>Complete naming checklist + Newman projection examples</span></li>
+            </ul>
+          </div>
+          <div class="ch-section">
+            <div class="section-title">Common Mistakes to Avoid</div>
+            <ul class="mistake-list">
+              <li>Choosing wrong parent chain in nomenclature</li>
+              <li>Numbering errors (start from the end giving lowest locants)</li>
+              <li>Confusing front and back carbons in Newman projections</li>
+              <li>Flipping axial/equatorial labels incorrectly after chair flip</li>
+            </ul>
+            <div class="selfcheck-box">
+              <div class="selfcheck-label">Self-check</div>
+              Can I draw a Newman projection from a 3D structure and identify the most stable conformation?
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CH 5 -->
+    <div class="ch-card" data-priority="master" data-kit="essential">
+      <div class="ch-card-header" onclick="toggleCard(this)">
+        <div class="ch-icon" style="background:#E6F1FB;color:#185FA5;">5</div>
+        <div class="ch-meta">
+          <div class="ch-title">Ch. 5 — Stereoisomerism</div>
+          <div class="ch-sub">Chirality · R/S configuration · enantiomers · diastereomers · Fischer projections</div>
+          <div class="ch-badges">
+            <span class="badge badge-high">Strong familiarity</span>
+            <span class="badge badge-kit-essential">Kit: Most Critical</span>
+          </div>
+        </div>
+        <div class="ch-progress">
+          <div class="ch-prog-bar"><div class="ch-prog-fill" id="prog5" style="width:0%"></div></div>
+          <div class="ch-prog-pct" id="pct5">0%</div>
+        </div>
+        <div class="ch-toggle">▾</div>
+      </div>
+      <div class="ch-card-body">
+        <div class="ch-sections">
+          <div class="ch-section">
+            <div class="section-title">Study Goal</div>
+            <div class="section-content">Understand chirality and all stereoisomer relationships. Find chiral centers; assign R/S; distinguish enantiomers from diastereomers.</div>
+            <br>
+            <div class="section-title">HW Syllabus Topics</div>
+            <div class="section-content">Stereochemistry · 3D visualization · chirality · enantiomers · diastereomers · R/S</div>
+          </div>
+          <div class="ch-section">
+            <div class="section-title">Model Kit Usage ★ Most Critical Chapter</div>
+            <div class="section-content">
+              Build two mirror-image molecules and physically try to superimpose them.<br>
+              Assign R/S by holding the model with priority 4 pointing away — exactly as the rule requires.<br>
+              <em>Model kit is strongly recommended by the syllabus for this chapter.</em>
+            </div>
+            <br>
+            <div class="section-title">Online Resources</div>
+            <ul class="link-list">
+              <li><span class="link-tag">Khan</span><a href="https://www.khanacademy.org/science/organic-chemistry/stereochemistry-topic" target="_blank">Stereochemistry series</a></li>
+              <li><span class="link-tag">Leah4Sci</span><a href="https://leah4sci.com/how-to-use-your-organic-chemistry-model-kit/" target="_blank">Kit + chirality walkthrough</a></li>
+              <li><span class="link-tag">App (iOS)</span><a href="https://apps.apple.com/us/app/id1447273655" target="_blank">Visualizing Organic Chemistry</a></li>
+              <li><span class="link-tag">MolView</span><a href="https://molview.org" target="_blank">3D enantiomer comparison</a></li>
+            </ul>
+          </div>
+          <div class="ch-section">
+            <div class="section-title">Study Checklist</div>
+            <ul class="checklist" data-chapter="5">
+              <li><input type="checkbox" onchange="updateProgress(5,this)"><span>Identify all chiral centers in 10 different molecules</span></li>
+              <li><input type="checkbox" onchange="updateProgress(5,this)"><span>Build two enantiomers with kit; verify non-superimposability</span></li>
+              <li><input type="checkbox" onchange="updateProgress(5,this)"><span>Assign R/S to 15 chiral centers using priority rules</span></li>
+              <li><input type="checkbox" onchange="updateProgress(5,this)"><span>Classify pairs as enantiomers, diastereomers, or identical</span></li>
+            </ul>
+          </div>
+          <div class="ch-section">
+            <div class="section-title">Common Mistakes to Avoid</div>
+            <ul class="mistake-list">
+              <li>Calling non-chiral carbons chiral (check: 4 different groups required)</li>
+              <li>Forgetting to put priority 4 pointing away before assigning R/S</li>
+              <li>Confusing enantiomers and diastereomers</li>
+              <li>Assuming mirror image = enantiomer (must check non-superimposability)</li>
+            </ul>
+            <div class="selfcheck-box">
+              <div class="selfcheck-label">Self-check</div>
+              Can I build two mirror-image molecules and explain whether they are enantiomers or identical?
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CH 6 -->
+    <div class="ch-card" data-priority="familiarity" data-kit="recommended">
+      <div class="ch-card-header" onclick="toggleCard(this)">
+        <div class="ch-icon" style="background:#FAEEDA;color:#854F0B;">6</div>
+        <div class="ch-meta">
+          <div class="ch-title">Ch. 6 — Chemical Reactivity &amp; Mechanisms</div>
+          <div class="ch-sub">Curved arrows · nucleophile / electrophile · leaving groups · intermediates</div>
+          <div class="ch-badges">
+            <span class="badge badge-medium">Familiarity</span>
+            <span class="badge badge-kit-recommended">Kit: Recommended</span>
+          </div>
+        </div>
+        <div class="ch-progress">
+          <div class="ch-prog-bar"><div class="ch-prog-fill" id="prog6" style="width:0%"></div></div>
+          <div class="ch-prog-pct" id="pct6">0%</div>
+        </div>
+        <div class="ch-toggle">▾</div>
+      </div>
+      <div class="ch-card-body">
+        <div class="ch-sections">
+          <div class="ch-section">
+            <div class="section-title">Study Goal</div>
+            <div class="section-content">Learn the curved-arrow language and identify reactivity roles (nucleophile, electrophile, leaving group). Foundation for all future mechanisms.</div>
+            <br>
+            <div class="section-title">HW Syllabus Topics</div>
+            <div class="section-content">Reaction mechanisms · functional group transformations · synthesis foundation</div>
+          </div>
+          <div class="ch-section">
+            <div class="section-title">Model Kit Usage</div>
+            <div class="section-content">Visualize the SN2 backside attack geometry — nucleophile approaching 180° from leaving group. Helps make curved arrow direction intuitive.</div>
+            <br>
+            <div class="section-title">Online Resources</div>
+            <ul class="link-list">
+              <li><span class="link-tag">Khan</span><a href="https://www.khanacademy.org/science/organic-chemistry/organic-structures/acid-base-review/v/organic-acid-base-mechanisms" target="_blank">Organic acid-base mechanisms</a></li>
+              <li><span class="link-tag">Leah4Sci</span><a href="https://leah4sci.com" target="_blank">Curved arrow rules</a></li>
+              <li><span class="link-tag">MolView</span><a href="https://molview.org" target="_blank">3D reactant visualization</a></li>
+            </ul>
+          </div>
+          <div class="ch-section">
+            <div class="section-title">Study Checklist</div>
+            <ul class="checklist" data-chapter="6">
+              <li><input type="checkbox" onchange="updateProgress(6,this)"><span>Learn curved arrow rules: always start from electrons, not atoms</span></li>
+              <li><input type="checkbox" onchange="updateProgress(6,this)"><span>Identify Nu, E, and LG in 10 reaction setups</span></li>
+              <li><input type="checkbox" onchange="updateProgress(6,this)"><span>Check formal charges after every arrow-pushing step</span></li>
+              <li><input type="checkbox" onchange="updateProgress(6,this)"><span>Build mechanism roles checklist (Nu/E/LG/intermediate definitions)</span></li>
+            </ul>
+          </div>
+          <div class="ch-section">
+            <div class="section-title">Common Mistakes to Avoid</div>
+            <ul class="mistake-list">
+              <li>Starting curved arrows from an atom (must start from lone pair or bond)</li>
+              <li>Drawing arrows into the wrong site (must go to electron-poor atom)</li>
+              <li>Not checking formal charges after each mechanism step</li>
+            </ul>
+            <div class="selfcheck-box">
+              <div class="selfcheck-label">Self-check</div>
+              Can I draw a 2-step mechanism with correct arrows and verify all formal charges after each step?
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CH 7 -->
+    <div class="ch-card" data-priority="later" data-kit="recommended">
+      <div class="ch-card-header" onclick="toggleCard(this)">
+        <div class="ch-icon" style="background:#F1EFE8;color:#5F5E5A;">7</div>
+        <div class="ch-meta">
+          <div class="ch-title">Ch. 7 — Nucleophilic Substitution &amp; Elimination</div>
+          <div class="ch-sub">SN1 · SN2 · E1 · E2 — big-picture overview only before class</div>
+          <div class="ch-badges">
+            <span class="badge badge-preview">Optional preview</span>
+            <span class="badge badge-kit-recommended">Kit: Recommended</span>
+          </div>
+        </div>
+        <div class="ch-progress">
+          <div class="ch-prog-bar"><div class="ch-prog-fill" id="prog7" style="width:0%"></div></div>
+          <div class="ch-prog-pct" id="pct7">0%</div>
+        </div>
+        <div class="ch-toggle">▾</div>
+      </div>
+      <div class="ch-card-body">
+        <div class="ch-sections">
+          <div class="ch-section">
+            <div class="section-title">Study Goal</div>
+            <div class="section-content">Preview SN1/SN2/E1/E2 at the big-picture level only. Do not attempt to memorize before completing Ch. 6.</div>
+            <br>
+            <div class="section-title">HW Syllabus Topics</div>
+            <div class="section-content">Mechanisms · functional group transformations</div>
+          </div>
+          <div class="ch-section">
+            <div class="section-title">Model Kit Usage</div>
+            <div class="section-content">Use kit with class instruction — visualize SN2 backside attack stereochemistry (inversion) when the teacher introduces it.</div>
+            <br>
+            <div class="section-title">Online Resources</div>
+            <ul class="link-list">
+              <li><span class="link-tag">Khan</span><a href="https://www.khanacademy.org/science/organic-chemistry" target="_blank">Organic chemistry (overview)</a></li>
+              <li><span class="link-tag">MolView</span><a href="https://molview.org" target="_blank">3D reactant visualization</a></li>
+            </ul>
+          </div>
+          <div class="ch-section">
+            <div class="section-title">Study Checklist</div>
+            <ul class="checklist" data-chapter="7">
+              <li><input type="checkbox" onchange="updateProgress(7,this)"><span>Make a SN1/SN2/E1/E2 comparison chart (big picture only)</span></li>
+              <li><input type="checkbox" onchange="updateProgress(7,this)"><span>Understand one-step vs two-step mechanism concept</span></li>
+              <li><input type="checkbox" onchange="updateProgress(7,this)"><span>Complete easy concept problems only — no deep memorization</span></li>
+            </ul>
+          </div>
+          <div class="ch-section">
+            <div class="section-title">Common Mistakes to Avoid</div>
+            <ul class="mistake-list">
+              <li>Trying to memorize reaction details before Ch. 6 is solid</li>
+              <li>Confusing strong base vs strong nucleophile</li>
+              <li>Ignoring stereochemical outcomes</li>
+            </ul>
+            <div class="selfcheck-box">
+              <div class="selfcheck-label">Self-check</div>
+              Can I describe the key difference between SN1 and SN2 in one sentence each?
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CH 8 -->
+    <div class="ch-card" data-priority="later" data-kit="recommended">
+      <div class="ch-card-header" onclick="toggleCard(this)">
+        <div class="ch-icon" style="background:#F1EFE8;color:#5F5E5A;">8</div>
+        <div class="ch-meta">
+          <div class="ch-title">Ch. 8 — Addition Reactions of Alkenes</div>
+          <div class="ch-sub">Pi bond reactivity · regiochemistry · Markovnikov — overview only</div>
+          <div class="ch-badges">
+            <span class="badge badge-preview">Optional preview</span>
+            <span class="badge badge-kit-recommended">Kit: Recommended</span>
+          </div>
+        </div>
+        <div class="ch-progress">
+          <div class="ch-prog-bar"><div class="ch-prog-fill" id="prog8" style="width:0%"></div></div>
+          <div class="ch-prog-pct" id="pct8">0%</div>
+        </div>
+        <div class="ch-toggle">▾</div>
+      </div>
+      <div class="ch-card-body">
+        <div class="ch-sections">
+          <div class="ch-section">
+            <div class="section-title">Study Goal</div>
+            <div class="section-content">Preview pi-bond reactivity and understand that alkene pi bonds are electron-rich and attack electrophiles. Avoid memorizing specific reactions before class.</div>
+            <br>
+            <div class="section-title">HW Syllabus Topics</div>
+            <div class="section-content">Functional group transformations · mechanisms · addition reactions</div>
+          </div>
+          <div class="ch-section">
+            <div class="section-title">Model Kit Usage</div>
+            <div class="section-content">Build an alkene with the kit to visualize the pi bond geometry (planar, p orbital lobes above/below the plane). Helps understand electron-rich character.</div>
+            <br>
+            <div class="section-title">Online Resources</div>
+            <ul class="link-list">
+              <li><span class="link-tag">Khan</span><a href="https://www.khanacademy.org/science/organic-chemistry/alkenes-alkynes/naming-alkenes-jay/v/cis-trans-isomerism" target="_blank">Cis-trans isomerism</a></li>
+              <li><span class="link-tag">MolView</span><a href="https://molview.org" target="_blank">Alkene 3D structure</a></li>
+            </ul>
+          </div>
+          <div class="ch-section">
+            <div class="section-title">Study Checklist</div>
+            <ul class="checklist" data-chapter="8">
+              <li><input type="checkbox" onchange="updateProgress(8,this)"><span>Understand that alkene pi bond is nucleophilic (electron-rich)</span></li>
+              <li><input type="checkbox" onchange="updateProgress(8,this)"><span>Identify cis/trans isomers of simple alkenes</span></li>
+              <li><input type="checkbox" onchange="updateProgress(8,this)"><span>Preview addition concept only — no reaction memorization yet</span></li>
+            </ul>
+          </div>
+          <div class="ch-section">
+            <div class="section-title">Common Mistakes to Avoid</div>
+            <ul class="mistake-list">
+              <li>Memorizing reaction products without understanding mechanism</li>
+              <li>Ignoring regiochemistry (which carbon gets which group)</li>
+              <li>Starting deep study before Ch. 6 and 7 are understood</li>
+            </ul>
+            <div class="selfcheck-box">
+              <div class="selfcheck-label">Self-check</div>
+              Can I explain why an alkene pi bond acts as a nucleophile?
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CH 14-15 -->
+    <div class="ch-card" data-priority="later" data-kit="none">
+      <div class="ch-card-header" onclick="toggleCard(this)">
+        <div class="ch-icon" style="background:#F1EFE8;color:#5F5E5A;">14–15</div>
+        <div class="ch-meta">
+          <div class="ch-title">Ch. 14–15 — Spectroscopy</div>
+          <div class="ch-sub">IR · NMR · Mass Spectrometry — study deeply with class, not before</div>
+          <div class="ch-badges">
+            <span class="badge badge-later">Later</span>
+            <span class="badge badge-kit-none">Kit: Not needed</span>
+          </div>
+        </div>
+        <div class="ch-progress">
+          <div class="ch-prog-bar"><div class="ch-prog-fill" id="prog14" style="width:0%"></div></div>
+          <div class="ch-prog-pct" id="pct14">0%</div>
+        </div>
+        <div class="ch-toggle">▾</div>
+      </div>
+      <div class="ch-card-body">
+        <div class="ch-sections">
+          <div class="ch-section">
+            <div class="section-title">Study Goal</div>
+            <div class="section-content">Know that spectroscopy is used to infer molecular structure from data. Learn IR/NMR details only when the teacher introduces them — do not study this chapter independently before class starts.</div>
+            <br>
+            <div class="section-title">HW Syllabus Topics</div>
+            <div class="section-content">Spectroscopy · IR · NMR · mass spectrometry</div>
+          </div>
+          <div class="ch-section">
+            <div class="section-title">Model Kit Usage</div>
+            <div class="section-content">Not needed. Use MolView instead — it automatically generates IR spectra and mass spectra for any molecule you draw, which is far more useful for this chapter.</div>
+            <br>
+            <div class="section-title">Online Resources</div>
+            <ul class="link-list">
+              <li><span class="link-tag">MolView</span><a href="https://molview.org" target="_blank">Auto IR &amp; MS spectra generation</a></li>
+              <li><span class="link-tag">Khan</span><a href="https://www.khanacademy.org/science/organic-chemistry" target="_blank">Organic chemistry (spectroscopy)</a></li>
+            </ul>
+          </div>
+          <div class="ch-section">
+            <div class="section-title">Study Checklist</div>
+            <ul class="checklist" data-chapter="14">
+              <li><input type="checkbox" onchange="updateProgress(14,this)"><span>Understand that IR identifies functional groups from absorption peaks</span></li>
+              <li><input type="checkbox" onchange="updateProgress(14,this)"><span>Know that NMR reveals H/C environments in a molecule</span></li>
+              <li><input type="checkbox" onchange="updateProgress(14,this)"><span>Learn detailed NMR shifts only after class introduces them</span></li>
+            </ul>
+          </div>
+          <div class="ch-section">
+            <div class="section-title">Common Mistakes to Avoid</div>
+            <ul class="mistake-list">
+              <li>Starting detailed NMR study too early in the summer</li>
+              <li>Memorizing chemical shift values without understanding structure</li>
+            </ul>
+            <div class="selfcheck-box">
+              <div class="selfcheck-label">Self-check</div>
+              Can I describe in one sentence what IR spectroscopy and NMR each tell us about a molecule?
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /chapter-grid -->
+</div><!-- /tab-chapters -->
+
+<!-- ========== TAB: HW SYLLABUS ========== -->
+<div id="tab-syllabus" class="tab-content">
+  <div class="syllabus-section">
+    <h2>Prerequisites</h2>
+    <table class="syl-table">
+      <thead><tr><th>Topic</th><th>What it means</th><th>Klein</th><th>Priority</th><th>Target before class</th><th>Khan Academy</th></tr></thead>
+      <tbody>
+        <tr><td>Periodic trends</td><td>Electronegativity, atomic size, bond polarity to predict electron-rich/poor sites</td><td>Ch. 1</td><td><span class="badge badge-high">High</span></td><td>Understand EN and bond polarity</td><td><a href="https://www.khanacademy.org/science/ap-chemistry-beta/x2eef969c74e0d802%3Amolecular-and-ionic-compound-structure-and-properties" target="_blank">Molecular &amp; ionic compounds</a></td></tr>
+        <tr><td>Lewis dot structures</td><td>Draw atoms, bonds, lone pairs, octets accurately</td><td>Ch. 1</td><td><span class="badge badge-essential">Essential</span></td><td>Draw C/N/O/halogen structures without missing lone pairs</td><td><a href="https://www.khanacademy.org/science/ap-chemistry-beta/x2eef969c74e0d802%3Amolecular-and-ionic-compound-structure-and-properties/x2eef969c74e0d802%3Alewis-diagrams/e/lewis-diagrams" target="_blank">Lewis diagrams (practice)</a></td></tr>
+        <tr><td>Formal charge</td><td>Determine charges and best resonance contributors</td><td>Ch. 1</td><td><span class="badge badge-essential">Essential</span></td><td>Calculate charge in seconds</td><td><a href="https://www.khanacademy.org/science/ap-chemistry-beta/x2eef969c74e0d802%3Amolecular-and-ionic-compound-structure-and-properties/x2eef969c74e0d802%3Aresonance-and-formal-charge/v/formal-charge" target="_blank">Formal charge</a></td></tr>
+        <tr><td>Resonance</td><td>Move electrons, not atoms; evaluate valid contributors</td><td>Ch. 1–2</td><td><span class="badge badge-essential">Essential</span></td><td>Identify valid resonance structures</td><td><a href="https://www.khanacademy.org/science/ap-chemistry-beta/x2eef969c74e0d802%3Amolecular-and-ionic-compound-structure-and-properties/x2eef969c74e0d802%3Aresonance-and-formal-charge/e/resonance-and-formal-charge" target="_blank">Resonance &amp; formal charge</a></td></tr>
+        <tr><td>VSEPR theory</td><td>Predict 3D molecular geometry from electron domains</td><td>Ch. 1</td><td><span class="badge badge-essential">Essential</span></td><td>Recognize tetrahedral, trigonal planar, linear</td><td><a href="https://www.khanacademy.org/science/hs-chemistry/x2613d8165d88df5e%3Astates-of-matter/x2613d8165d88df5e%3Aelectronegativity-and-bond-polarity/v/molecular-geometry-vsepr-theory" target="_blank">Molecular geometry (VSEPR)</a></td></tr>
+        <tr><td>Polarity</td><td>Judge bond dipoles and molecular dipoles</td><td>Ch. 1</td><td><span class="badge badge-essential">Essential</span></td><td>Mark partial positive/negative atoms</td><td><a href="https://en.khanacademy.org/science/hs-chemistry/x2613d8165d88df5e%3Astates-of-matter/x2613d8165d88df5e%3Aelectronegativity-and-bond-polarity/v/molecular-polarity" target="_blank">Molecular polarity</a></td></tr>
+        <tr><td>Intermolecular forces</td><td>Explain boiling point, solubility, physical properties</td><td>Ch. 1, 4</td><td><span class="badge badge-high">High</span></td><td>Compare dispersion, dipole-dipole, H-bonding</td><td><a href="https://www.khanacademy.org/science/ap-chemistry-beta/x2eef969c74e0d802%3Aintermolecular-forces-and-properties/x2eef969c74e0d802%3Aintermolecular-forces/e/intermolecular-forces" target="_blank">Intermolecular forces (practice)</a></td></tr>
+        <tr><td>3D visualization</td><td>Visualize molecule shape and how shape affects reactivity</td><td>Ch. 1, 4, 5</td><td><span class="badge badge-essential">Essential</span></td><td>Use wedge/dash and model kit comfortably</td><td><a href="https://www.khanacademy.org/science/organic-chemistry/gen-chem-review/bond-line-structures/v/three-dimensional-bond-line-structures-new" target="_blank">3D bond-line structures</a></td></tr>
+        <tr><td>Acid/base foundations</td><td>Conjugate acids/bases, pKa, equilibrium direction</td><td>Ch. 3</td><td><span class="badge badge-essential">Essential</span></td><td>Identify acid/base pairs and direction</td><td><a href="https://www.khanacademy.org/science/ap-chemistry-beta/x2eef969c74e0d802%3Achemical-reactions/x2eef969c74e0d802%3Aintroduction-to-acid-base-reactions/v/bronsted-lowry-definition-of-acids-and-bases" target="_blank">Brønsted–Lowry acids &amp; bases</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="syllabus-section">
+    <h2>Organic Topics</h2>
+    <table class="syl-table">
+      <thead><tr><th>Topic</th><th>What it means</th><th>Klein</th><th>Priority</th><th>Target before class</th><th>Khan Academy</th></tr></thead>
+      <tbody>
+        <tr><td>Basic nomenclature</td><td>Name organic molecules; identify parent chains/substituents</td><td>Ch. 4+</td><td><span class="badge badge-high">High</span></td><td>Name simple alkanes/cycloalkanes</td><td><a href="https://www.khanacademy.org/science/class-11-chemistry-india/xfbb6cb8fc2bd00c8%3Ain-in-organic-chemistry-some-basic-principles-and-techniques/xfbb6cb8fc2bd00c8%3Ain-in-nomenclature-of-organic-compounds/e/nomenclature-of-organic-compounds" target="_blank">Nomenclature (practice)</a></td></tr>
+        <tr><td>Bond-line structures</td><td>Read skeletal structures and hidden hydrogens</td><td>Ch. 2</td><td><span class="badge badge-essential">Essential</span></td><td>Convert between condensed and bond-line forms</td><td><a href="https://www.khanacademy.org/science/organic-chemistry/gen-chem-review/bond-line-structures/v/bond-line-structures-new" target="_blank">Bond-line structures</a></td></tr>
+        <tr><td>Functional groups</td><td>Recognize structural motifs and predict reactivity</td><td>Ch. 2–4, 8+</td><td><span class="badge badge-essential">Essential</span></td><td>Recognize 10–15 common groups by sight</td><td><a href="https://www.khanacademy.org/science/organic-chemistry/gen-chem-review" target="_blank">Structure and bonding</a></td></tr>
+        <tr><td>Stereochemistry</td><td>Analyze molecules in 3D: chirality, enantiomers, diastereomers, R/S</td><td>Ch. 5</td><td><span class="badge badge-essential">Essential</span></td><td>Find chiral centers and basic R/S</td><td><a href="https://www.khanacademy.org/science/organic-chemistry/stereochemistry-topic" target="_blank">Stereochemistry</a></td></tr>
+        <tr><td>Electronic structure</td><td>Use bonding/orbitals/hybridization for properties and reactions</td><td>Ch. 1</td><td><span class="badge badge-essential">Essential</span></td><td>Connect hybridization to geometry/reactivity</td><td><a href="https://www.khanacademy.org/science/organic-chemistry/gen-chem-review" target="_blank">Structure and bonding</a></td></tr>
+        <tr><td>Reaction mechanisms</td><td>Use curved arrows to show electron movement</td><td>Ch. 6–8</td><td><span class="badge badge-essential">Essential</span></td><td>Draw arrows from electrons to electron-poor sites</td><td><a href="https://www.khanacademy.org/science/organic-chemistry/organic-structures/acid-base-review/v/organic-acid-base-mechanisms" target="_blank">Organic acid-base mechanisms</a></td></tr>
+        <tr><td>Functional group transformations</td><td>Predict products as functional groups react and change</td><td>Ch. 7–13+</td><td><span class="badge badge-medium">Medium</span></td><td>Preview only — learn deeply with class</td><td><a href="https://www.khanacademy.org/science/organic-chemistry" target="_blank">Organic chemistry (overview)</a></td></tr>
+        <tr><td>Synthesis</td><td>Plan sequences to build target molecules</td><td>Ch. 11+</td><td><span class="badge badge-later">Later</span></td><td>Understand concept only before class</td><td><a href="https://www.khanacademy.org/science/organic-chemistry" target="_blank">Organic chemistry (overview)</a></td></tr>
+        <tr><td>Spectroscopy</td><td>Use IR/NMR/MS data to infer structures</td><td>Ch. 14–15</td><td><span class="badge badge-later">Later</span></td><td>Know it is structure analysis — deep study later</td><td><a href="https://www.khanacademy.org/science/organic-chemistry" target="_blank">Organic chemistry (overview)</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ========== TAB: PREREQUISITES ========== -->
+<div id="tab-prereqs" class="tab-content">
+  <div class="syllabus-section">
+    <h2>Prerequisite Deep-Dive Guide</h2>
+    <table class="syl-table">
+      <thead><tr><th>Topic</th><th>Target knowledge level</th><th>Study method</th><th>Problem-solving method</th><th>Common mistakes</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Periodic trends / EN</strong></td>
+          <td>Explain why O/N/halogens pull electron density more than C/H</td>
+          <td>Read Klein Ch.1 relevant sections; watch Khan only if EN/polarity feels weak</td>
+          <td>Mark δ+ and δ− on 10 bonds: C−O, C−N, C−Cl, O−H, N−H, C−H</td>
+          <td>Memorizing trends unrelated to organic reactivity; reversing δ+/δ−</td>
+        </tr>
+        <tr>
+          <td><strong>Lewis structures</strong></td>
+          <td>Draw correct structures with octets, bonds, lone pairs</td>
+          <td>Attempt structures before looking at answer; use periodic table only as needed</td>
+          <td>Draw 15 structures with C/N/O/halogens; verify lone pairs</td>
+          <td>O/N lone pairs omitted; carbon valence not 4; missing hydrogens</td>
+        </tr>
+        <tr>
+          <td><strong>Formal charge</strong></td>
+          <td>Calculate charges quickly; use to judge resonance structures</td>
+          <td>Memorize common patterns, then practice formula: FC = valence − nonbonding − ½ bonding</td>
+          <td>20 formal charge reps including O+, O−, N+, carbocation, carbanion</td>
+          <td>Counting bonds as electrons; forgetting lone pairs; treating partial charge as formal charge</td>
+        </tr>
+        <tr>
+          <td><strong>Resonance</strong></td>
+          <td>Move electrons only; evaluate valid contributors</td>
+          <td>Use arrows only from lone pairs/bonds; compare formal charges after each move</td>
+          <td>Draw resonance structures for acetate, allyl cation, amide, benzyl</td>
+          <td>Moving atoms; changing sigma framework; creating 5-bond carbon; ignoring charge conservation</td>
+        </tr>
+        <tr>
+          <td><strong>VSEPR / geometry</strong></td>
+          <td>Predict shape and bond angle around key atoms</td>
+          <td>Count electron domains; connect to sp/sp²/sp³</td>
+          <td>Classify 20 atoms in structures as tetrahedral, trigonal planar, or linear</td>
+          <td>Counting double bond as 2 domains; ignoring lone pairs; confusing electron geometry with molecular geometry</td>
+        </tr>
+        <tr>
+          <td><strong>Polarity</strong></td>
+          <td>Predict bond and molecular polarity; connect to reactivity</td>
+          <td>Draw bond dipoles; consider shape for net dipole</td>
+          <td>Compare polar/nonpolar molecules; mark electrophilic atoms</td>
+          <td>Only comparing atoms, not shape; assuming all molecules with polar bonds are polar</td>
+        </tr>
+        <tr>
+          <td><strong>Intermolecular forces</strong></td>
+          <td>Compare boiling point/solubility based on structure</td>
+          <td>Sort compounds by IMF type and size/branching</td>
+          <td>Rank alcohols, alkanes, ethers, carboxylic acids by boiling point</td>
+          <td>Forgetting all molecules have dispersion; confusing H-bond donor vs acceptor</td>
+        </tr>
+        <tr>
+          <td><strong>Acid/base foundations</strong></td>
+          <td>Use pKa and conjugate base stability to predict direction</td>
+          <td>Learn acid/base pairs; focus on organic stability factors</td>
+          <td>For each reaction, identify acid/base, conjugates, favored side</td>
+          <td>Reading pKa backwards; ignoring resonance/induction/atom size; confusing strong acid with strong base</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ========== TAB: FOCUS AREAS ========== -->
+<div id="tab-focus" class="tab-content">
+  <div class="syllabus-section">
+    <h2>Pre-Class Focus Areas — What to complete before school starts</h2>
+    <table class="focus-table">
+      <thead><tr><th>Chapter</th><th>Main Focus</th><th>Study Tasks</th><th>Problem Tasks</th><th>Checkpoint</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Ch. 1</strong></td>
+          <td>Honors Chem refresh for organic</td>
+          <td>Read Ch.1; mark Lewis / formal charge / hybridization / polarity rules</td>
+          <td>SkillBuilder + basic problems; 80–90% accuracy target</td>
+          <td><span class="checkpoint-box">One-page Ch.1 rule sheet + missed-problem list</span></td>
+        </tr>
+        <tr>
+          <td><strong>Ch. 2</strong></td>
+          <td>Organic structure language</td>
+          <td>Practice condensed ↔ bond-line; hidden H; functional group labels</td>
+          <td>Structure conversion problems; carbon/H count</td>
+          <td><span class="checkpoint-box">Can read unfamiliar bond-line structures without stopping</span></td>
+        </tr>
+        <tr>
+          <td><strong>Ch. 3</strong></td>
+          <td>Acid/base and pKa</td>
+          <td>Create pKa mini-sheet; identify acid/base/conjugates</td>
+          <td>Predict favored side and justify using stability factors</td>
+          <td><span class="checkpoint-box">Acid/base decision checklist complete</span></td>
+        </tr>
+        <tr>
+          <td><strong>Ch. 4</strong></td>
+          <td>Nomenclature and conformations</td>
+          <td>Name simple alkanes/cycloalkanes; model ethane/butane/cyclohexane with kit</td>
+          <td>Naming + Newman projection basics</td>
+          <td><span class="checkpoint-box">Naming checklist + Newman projection examples</span></td>
+        </tr>
+        <tr>
+          <td><strong>Ch. 5</strong></td>
+          <td>Stereochemistry / 3D</td>
+          <td>Use model kit; practice chirality / R/S / enantiomer / diastereomer</td>
+          <td>Chiral center and R/S basic problems</td>
+          <td><span class="checkpoint-box">3D / stereo checklist complete</span></td>
+        </tr>
+        <tr>
+          <td><strong>Ch. 6</strong></td>
+          <td>Mechanism language</td>
+          <td>Learn curved arrow rules; identify Nu/E/LG</td>
+          <td>Arrow-pushing basics; check formal charges after arrows</td>
+          <td><span class="checkpoint-box">Mechanism roles checklist complete</span></td>
+        </tr>
+        <tr>
+          <td><strong>Ch. 7</strong></td>
+          <td>Substitution/elimination preview</td>
+          <td>Make SN1/SN2/E1/E2 comparison table only</td>
+          <td>Easy concept problems only — no deep memorization</td>
+          <td><span class="checkpoint-box">Big-picture comparison chart complete</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="syllabus-section" style="margin-top: 32px;">
+    <h2>Recommended Study Timeline</h2>
+    <table class="focus-table">
+      <thead><tr><th>Period</th><th>Focus</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Now → July 3</strong><br><em>(before Tanglewood)</em></td><td>Ch. 1 + Ch. 2 + Ch. 3</td><td>CNA ends July 3. Use available days now to complete the three foundational chapters. Target: one-page rule sheets + checklist items above.</td></tr>
+        <tr><td><strong>July 5 → Aug</strong><br><em>(Tanglewood BUTI)</em></td><td>Light review only</td><td>Orchestra schedule is intensive. Use the iOS app (Visualizing Organic Chemistry) for short sessions. Do not attempt new chapters.</td></tr>
+        <tr><td><strong>Aug → School start</strong><br><em>(return from Tanglewood)</em></td><td>Ch. 4 + Ch. 5 + Ch. 6 kit work</td><td>This is when model kit practice for Chair conformations and Stereochemistry should happen — after returning, before school begins.</td></tr>
+        <tr><td><strong>With class</strong></td><td>Ch. 7 + Ch. 8 + Ch. 14–15</td><td>Do not study these chapters in depth before the teacher introduces them. Follow class pacing.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</main>
+
+<script>
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function toggleCard(header) {
+  const card = header.closest('.ch-card');
+  card.classList.toggle('open');
+}
+
+function filterChapters(type, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.ch-card').forEach(card => {
+    if (type === 'all') { card.style.display = ''; return; }
+    if (type === 'master') { card.style.display = card.dataset.priority === 'master' ? '' : 'none'; return; }
+    if (type === 'kit-essential') { card.style.display = card.dataset.kit === 'essential' ? '' : 'none'; return; }
+    if (type === 'kit-recommended') { card.style.display = card.dataset.kit === 'recommended' ? '' : 'none'; return; }
+    if (type === 'later') { card.style.display = card.dataset.priority === 'later' ? '' : 'none'; return; }
+  });
+}
+
+function updateProgress(chapter, cb) {
+  const list = document.querySelector('[data-chapter="' + chapter + '"]');
+  if (!list) return;
+  const boxes = list.querySelectorAll('input[type="checkbox"]');
+  const checked = list.querySelectorAll('input[type="checkbox"]:checked').length;
+  const total = boxes.length;
+  const pct = total ? Math.round(checked / total * 100) : 0;
+  const fill = document.getElementById('prog' + chapter);
+  const pctEl = document.getElementById('pct' + chapter);
+  if (fill) fill.style.width = pct + '%';
+  if (pctEl) pctEl.textContent = pct + '%';
+  const span = cb.nextElementSibling;
+  if (span) span.classList.toggle('done', cb.checked);
+  updateGlobalProgress();
+  saveProgress();
+}
+
+function updateGlobalProgress() {
+  const all = document.querySelectorAll('.checklist input[type="checkbox"]');
+  const checked = document.querySelectorAll('.checklist input[type="checkbox"]:checked').length;
+  document.getElementById('total-count').textContent = all.length;
+  document.getElementById('done-count').textContent = checked;
+  document.getElementById('pct-count').textContent = all.length ? Math.round(checked / all.length * 100) + '%' : '0%';
+}
+
+function saveProgress() {
+  const state = {};
+  document.querySelectorAll('.checklist').forEach(list => {
+    const ch = list.dataset.chapter;
+    state[ch] = Array.from(list.querySelectorAll('input')).map(i => i.checked);
+  });
+  try { localStorage.setItem('orgo_progress', JSON.stringify(state)); } catch(e) {}
+}
+
+function loadProgress() {
+  let state;
+  try { state = JSON.parse(localStorage.getItem('orgo_progress') || 'null'); } catch(e) {}
+  if (!state) return;
+  document.querySelectorAll('.checklist').forEach(list => {
+    const ch = list.dataset.chapter;
+    if (!state[ch]) return;
+    list.querySelectorAll('input').forEach((inp, i) => {
+      if (state[ch][i]) {
+        inp.checked = true;
+        const span = inp.nextElementSibling;
+        if (span) span.classList.add('done');
+      }
+    });
+    updateProgress(ch, list.querySelector('input'));
+  });
+  updateGlobalProgress();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadProgress();
+  updateGlobalProgress();
+});
+</script>
+</body>
+</html>
