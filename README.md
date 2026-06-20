@@ -1,2 +1,4 @@
-# halyn-orgchem
-halyn organic chem guide
+# Halyn Study Guides
+
+- [Organic Chemistry Study Guide](https://halynkim2028.github.io/halyn-study/Halyn_OrganicChem_StudyGuide.html)
+- [Calculus I & II Study Guide](https://halynkim2028.github.io/halyn-study/Halyn_Calculus_StudyGuide.html)
